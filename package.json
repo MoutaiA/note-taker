@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/MoutaiA/note-taker#readme",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "jest": "^26.6.3"
+    "fs-extra": "^9.1.0",
+    "inquirer": "^8.0.0",
+    "jest": "^26.6.3",
+    "minimist": "^1.2.5"
   }
 }
