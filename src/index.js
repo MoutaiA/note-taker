@@ -1,16 +1,21 @@
-const { createUser } = require('./utils/user/create-user')
-const { removeUser } = require('./utils/user/remove-user')
+const http = require('http')
+const chalk = require('chalk')
 
-const args = require('minimist')(process.argv.slice(2))
+const port = process.env.PORT || 3000
 
-const main = async () => {
-    if (args['create']) {
-        createUser()
+const server = http.createServer((req, res) => {
+    const { url } = req
+
+    switch (url) {
+        case '/':
+            res.end('hello, world')
+            break
+        default:
+            res.end('error 404')
+            break
     }
+})
 
-    if (args['remove']) {
-        removeUser()
-    }
-}
-
-main()
+server.listen(port, () => {
+    console.log(chalk.bgGreen.black(`Server up on port ${port}`))
+})

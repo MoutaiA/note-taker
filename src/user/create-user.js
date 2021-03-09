@@ -30,7 +30,7 @@ const createUser = async () => {
     inquirer.prompt(questions)
         .then(answer => {
             if (answer['username'] && answer['password']) {
-                if (isUserAlreadyExist(answer)) {
+                if (!isUserAlreadyExist(answer)) {
                     createUserHandler(answer)
                 } else {
                     throw new Error('Error: User already exists')

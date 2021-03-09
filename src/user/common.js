@@ -17,12 +17,11 @@ const isUserAlreadyExist = user => {
     const userPath = `${publicDataPath}${user.username}-Dir`
 
     if (fs.existsSync(userPath)) {
-        return false
+        return true
     }
-    return true
+    return false
 }
 
-//Should check if the credentials are valid
 const isValidCredentials = user => {
     const userPath = `${publicDataPath}${user.username}-Dir/user.json`
     const userData = JSON.parse(fs.readFileSync(userPath, 'utf8'))

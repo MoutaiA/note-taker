@@ -14,7 +14,7 @@ const removeUser = () => {
     inquirer.prompt(questions)
         .then(answer => {
             if (answer['username'] && answer['password']) {
-                if (!isUserAlreadyExist(answer)) {
+                if (isUserAlreadyExist(answer)) {
                     if (isValidCredentials(answer)) {
                         removeDir(answer)
                     } else {
