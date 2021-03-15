@@ -1,21 +1,25 @@
-const http = require('http')
 const chalk = require('chalk')
+require('dotenv').config()
+require('./db/mongoose')
+const express = require('express')
+const userRouter = require('./user/route')
 
 const port = process.env.PORT || 3000
 
-const server = http.createServer((req, res) => {
-    const { url } = req
+const app = express()
 
-    switch (url) {
-        case '/':
-            res.end('hello, world')
-            break
-        default:
-            res.end('error 404')
-            break
-    }
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(userRouter)
+
+app.get('/', async (req, res) => {
+    res.send('end of get')
 })
 
-server.listen(port, () => {
-    console.log(chalk.bgGreen.black(`Server up on port ${port}`))
+app.get('/favicon.ico', (req, res) => {
+    res.send()
+})
+
+app.listen(port, () => {
+    console.log(chalk.bgGreen.black(`Server is running on port ${port}!`))
 })
