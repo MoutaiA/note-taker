@@ -1,13 +1,22 @@
 const express = require('express')
+const path = require('path')
 const User = require('./model')
 
 const router = express.Router()
 
-router.get('/user/:id', async (req, res) => {
-    const { id } = req.params
-    await User.findById(id)
-        .then(user => res.status(200).send(user))
-        .catch(e => res.status(404).send(e))
+router.get('/user', async (req, res) => {
+    const { name, password } = req.query
+    await User.findOne({ name, password })
+        .then(user => {
+            if (user) {
+                res.status(200).sendFile(path.join(__dirname, '../../public', '/html/user.html'))
+            } else {
+                throw new Error('User could not be found')
+            }
+        })
+        .catch(e => {
+            res.status(404).send(e)
+        })
 })
 
 router.post('/user', async (req, res) => {
@@ -30,8 +39,14 @@ router.put('/user', async (req, res) => {
 router.delete('/user', async (req, res) => {
     const { name, password } = req.body
     await User.deleteOne({ name, password })
-        .then(() => res.status(200).send())
-        .catch(e => res.status(400).send(e))
+        .then(user => {
+            if (user.deletedCount === 1) {
+                res.redirect(303, 'http://localhost:3000/')
+            } else {
+                throw new Error('No user deleted')
+            }
+        })
+        .catch(e => res.status(404).send(e))
 })
 
 module.exports = router

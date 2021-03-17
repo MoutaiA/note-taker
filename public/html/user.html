@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+
+<body>
+    <div>hello</div>
+    <div>
+        <p>Update a User</p>
+        <form id="update" action="/user">
+            <label for="">Login: </label>
+            <input type="text" required name="name">
+            <label for="">Password: </label>
+            <input type="password" required name="password">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <div>
+        <p>Delete a user</p>
+        <form id="delete" action="/user">
+            <label for="">Login: </label>
+            <input type="text" required name="name">
+            <label for="">Password: </label>
+            <input type="password" required name="password">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <a href="/">return to the root</a>
+
+    <script src="js/index.js"></script>
+</body>
+
+</html>
