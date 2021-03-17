@@ -6,6 +6,11 @@ const userOne = {
     password: '12345678'
 }
 
+const userTwo = {
+    name: 'User2',
+    password: '12345678'
+}
+
 beforeAll(done => {
     done()
 })
@@ -23,5 +28,6 @@ const setupDB = async () => {
 
 module.exports = {
     userOne,
+    userTwo,
     setupDB
 }
