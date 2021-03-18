@@ -27,5 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: docker-compose up -d
-    - run: docker exec -ti node-taker_node_1 bash
+    - run: docker exec -ti note-taker_node_1 bash
     - run: npm test
