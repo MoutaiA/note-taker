@@ -15,7 +15,6 @@ ENV NODE_ENV development
 ENV PORT 3000
 ENV MONGODB_URI mongodb://db:27017/note-dev
 
-WORKDIR "/app/src"
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "src/server.js"]
