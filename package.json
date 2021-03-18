@@ -4,7 +4,7 @@
   "description": "Package for taking notes",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch --detectOpenHandles",
+    "test": "jest --watchAll --detectOpenHandles",
     "dev": "NODE_ENV=development nodemon src/server.js",
     "start": "node src/server.js"
   },
