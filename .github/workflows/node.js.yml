@@ -25,7 +25,5 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-      env:
-        MONGODB_URI: mongodb://localhost:27017/note-test
     - run: npm ci
     - run: npm test
