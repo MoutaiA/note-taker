@@ -26,12 +26,28 @@ router.get('/user/:id', async (req, res) => {
 
 router.post('/user', async (req, res) => {
     const { body } = req
-    const user = new User(body)
-    await user.save()
-        .then(() => res.redirect(`http://localhost:3000/user?username=${user.name}&password=${user.password}`))
-        .catch(e => {
-            res.status(400).send(`The user ${e.keyValue.username} is already in the database`)
+    const newUser = await User(body)
+
+    try {
+        if (newUser) {
+            await newUser.save()
+                .then(user => res.status(200).send({
+                    message: 'The user has successfully created',
+                    user
+                }))
+                .catch(e => res.status(400).send({
+                    message: 'An error occurred while trying to save the user in the database',
+                    error: e
+                }))
+        } else {
+            throw new Error('The user does not exist')
+        }
+    } catch (e) {
+        res.status(500).send({
+            message: 'An error occurred',
+            error: e
         })
+    }
 })
 
 router.put('/user/:id', async (req, res) => {
