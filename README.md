@@ -2,6 +2,8 @@
 
 Note taker is a learning project for understanding NodeJS
 
+[Link towards the app](https://amoutai-note-taker.herokuapp.com/)
+
 ## Stack
 
 - Node: 15.11.0
