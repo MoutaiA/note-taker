@@ -55,17 +55,24 @@ router.put('/user/:id', async (req, res) => {
         })
 })
 
-router.delete('/user', async (req, res) => {
-    const { username, password } = req.body
-    await User.deleteOne({ username, password })
+router.delete('/user/:id', async (req, res) => {
+    const { id } = req.params
+
+    await User.findByIdAndDelete(id)
         .then(user => {
-            if (user.deletedCount === 1) {
-                res.redirect(303, 'http://localhost:3000/')
+            if (user) {
+                res.status(200).send({
+                    message: 'The user has been successfully deleted',
+                    user
+                })
             } else {
-                throw new Error('No user deleted')
+                throw new Error('The user could not be found')
             }
         })
-        .catch(e => res.status(404).send(e))
+        .catch(e => res.status(404).send({
+            message: 'An error has occurred while deleting the user',
+            user: e
+        }))
 })
 
 module.exports = router
