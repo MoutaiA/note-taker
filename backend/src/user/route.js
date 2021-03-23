@@ -4,19 +4,24 @@ const User = require('./model')
 
 const router = express.Router()
 
-router.get('/user', async (req, res) => {
-    const { username, password } = req.query
-    await User.findOne({ username, password })
+router.get('/user/:id', async (req, res) => {
+    const { id } = req.params
+
+    await User.findById(id)
         .then(user => {
             if (user) {
-                res.status(200).send({ user })
+                res.status(200).send({
+                    message: 'This is the user you have asked for',
+                    user
+                })
             } else {
-                throw new Error('User could not be found')
+                throw new Error('There is no user with this id, please make sure to enter the right id')
             }
         })
-        .catch(e => {
-            res.status(404).send(e)
-        })
+        .catch(e => res.status(404).send({
+            message: 'Error while trying to get the user',
+            user: e
+        }))
 })
 
 router.post('/user', async (req, res) => {
