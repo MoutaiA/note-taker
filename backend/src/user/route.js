@@ -1,13 +1,51 @@
 const express = require('express')
-const path = require('path')
 const User = require('./model')
+const jwt = require('jsonwebtoken')
+
+const jwtKey = 'mySecretKey'
+const jwtExpires = 300
 
 const router = express.Router()
 
-router.get('/user/:id', async (req, res) => {
-    const { id } = req.params
+router.post('/signin', async (req, res) => {
+    const { username, password } = req.body
 
-    await User.findById(id)
+    if (!username || !password) {
+        res.status(400).send({
+            message: 'The information send are invalid or null'
+        })
+    }
+
+    await User.findOne({ username, password })
+        .then(user => {
+            const id = user._id
+            const token = jwt.sign({ id }, jwtKey, {
+                algorithm: 'HS256',
+                expiresIn: jwtExpires
+            })
+            res.cookie('token', token, { maxAge: jwtExpires * 1000 })
+            res.status(200).send()
+        })
+        .catch(e => {
+            console.error(e)
+            res.status(500).send({
+                message: 'No user found for the credentials specified',
+                error: e
+            })
+        })
+})
+
+router.get('/user', async (req, res) => {
+    const cookie = req.cookies.token
+
+    if (!cookie) {
+        res.status(404).send({
+            message: 'Error: you\'re not supposed to be here!'
+        })
+    }
+    console.log(cookie)
+
+    await User.findById(cookie.id)
         .then(user => {
             if (user) {
                 res.status(200).send({
