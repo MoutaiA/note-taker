@@ -7,7 +7,7 @@ const jwtExpires = 300
 
 const router = express.Router()
 
-router.post('/signin', async (req, res) => {
+router.post('/login', async (req, res) => {
     const { username, password } = req.body
 
     if (!username || !password) {
@@ -36,30 +36,38 @@ router.post('/signin', async (req, res) => {
 })
 
 router.get('/user', async (req, res) => {
-    const cookie = req.cookies.token
+    const token = req.cookies.token
 
-    if (!cookie) {
+    if (!token) {
         res.status(404).send({
             message: 'Error: you\'re not supposed to be here!'
         })
     }
-    console.log(cookie)
 
-    await User.findById(cookie.id)
-        .then(user => {
-            if (user) {
-                res.status(200).send({
-                    message: 'This is the user you have asked for',
-                    user
-                })
-            } else {
-                throw new Error('There is no user with this id, please make sure to enter the right id')
-            }
-        })
-        .catch(e => res.status(404).send({
-            message: 'Error while trying to get the user',
-            user: e
-        }))
+	jwt.verify(token, jwtKey, async (err, data) => {
+		if(err) {
+			res.status(404).send({
+				message: err
+				})
+		}
+		
+		await User.findById(data.id)
+	        .then(user => {
+				console.log('coucou')
+   		         if (user) {
+   		             res.status(200).send({
+       		             message: 'This is the user you have asked for',
+           		         user
+               		})
+            	} else {
+                	throw new Error('There is no user with this id, please make sure to enter the right id')
+            	}
+        	})
+        	.catch(e => res.status(404).send({
+           		 message: 'Error while trying to get the user',
+            	user: e
+        	}))
+		})
 })
 
 router.post('/user', async (req, res) => {
