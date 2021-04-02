@@ -18,6 +18,7 @@ router.post('/login', async (req, res) => {
 
     await User.findOne({ username, password })
         .then(user => {
+			if(user) {
             const id = user._id
             const token = jwt.sign({ id }, jwtKey, {
                 algorithm: 'HS256',
@@ -25,6 +26,9 @@ router.post('/login', async (req, res) => {
             })
             res.cookie('token', token, { maxAge: jwtExpires * 1000 })
             res.status(200).send()
+			} else {
+					throw new Error('No user found')
+			}
         })
         .catch(e => {
             console.error(e)
@@ -33,6 +37,13 @@ router.post('/login', async (req, res) => {
                 error: e
             })
         })
+})
+
+router.get('/logout', async (req, res) => {	
+	if(req.cookies.token) {
+		delete req.cookies.token
+	}
+	res.status(200).send()
 })
 
 router.get('/user', async (req, res) => {
@@ -53,7 +64,6 @@ router.get('/user', async (req, res) => {
 		
 		await User.findById(data.id)
 	        .then(user => {
-				console.log('coucou')
    		         if (user) {
    		             res.status(200).send({
        		             message: 'This is the user you have asked for',
@@ -77,10 +87,12 @@ router.post('/user', async (req, res) => {
     try {
         if (newUser) {
             await newUser.save()
-                .then(user => res.status(200).send({
-                    message: 'The user has successfully created',
-                    user
-                }))
+                .then(user => {
+						res.status(200).send({
+                    	message: 'The user has successfully created',
+                    	user
+                	})
+				})
                 .catch(e => res.status(400).send({
                     message: 'An error occurred while trying to save the user in the database',
                     error: e
@@ -96,8 +108,21 @@ router.post('/user', async (req, res) => {
     }
 })
 
-router.put('/user/:id', async (req, res) => {
-    const { id } = req.params
+router.put('/user', async (req, res) => {
+	if(!req.cookies.token) {
+		res.status(404).send({
+			message: 'No token found'
+		})
+	}
+
+	const {token}= req.cookies
+	jwt.verify(token, jwtKey, async (err, data) => {
+		if(err) {
+			res.status(404).send('An error occurred')
+		}
+
+		const id = data.id
+
     const fieldsToUpdate = Object.entries(req.body)
 
     await User.findById(id)
@@ -120,6 +145,7 @@ router.put('/user/:id', async (req, res) => {
                 e
             })
         })
+	})
 })
 
 router.delete('/user/:id', async (req, res) => {
